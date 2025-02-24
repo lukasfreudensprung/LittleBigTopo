@@ -1,0 +1,21 @@
+all:
+  children:
+    winsrv:
+      hosts:
+        dc1:
+          ansible_host: 10.2.1.1
+        dc2:
+          ansible_host: 10.2.1.2
+        dc3:
+          ansible_host: 10.3.0.1
+        dc4:
+          ansible_host: 10.2.2.3
+        rodc:
+          ansible_host: 10.2.2.4
+
+    wincli:
+      hosts:
+        wincli1:
+          ansible_host: 10.0.4.1
+        wincli2:
+          ansible_host: 10.0.4.2
