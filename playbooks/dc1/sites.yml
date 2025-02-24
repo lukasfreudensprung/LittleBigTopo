@@ -1,0 +1,60 @@
+- name: Create Sites and Site-Link
+  hosts: dc1
+  gather_facts: no
+  tasks:
+
+    - name: create Site-1-AvangerHQ
+      win_shell: |
+        New-ADReplicationSite -Name "Site-1-AvangerHQ"
+
+    - name: create Subnnet for Site-1-AvangerHQ
+      win_shell: |
+        New-ADReplicationSubnet -Name "192.168.50.0/24" -Site "Site-1-AvangerHQ"
+
+    - name: create Site-2-Wakanda
+      win_shell: |
+        New-ADReplicationSite -Name "Site-2-Wakanda"
+
+    - name: create Subnnet for Site-2-Wakanda
+      win_shell: |
+        New-ADReplicationSubnet -Name "10.10.0.0/24" -Site "Site-2-Wakanda"
+
+    - name: create Site-3-SS
+      win_shell: |
+        New-ADReplicationSite -Name "Site-3-SS"
+
+    - name: create Subnnet for Site-3-SS
+      win_shell: |
+        New-ADReplicationSubnet -Name "192.168.125.0/24" -Site "Site-3-SS"
+
+    - name: create Site-Link between S1 & S2
+      win_shell: |
+        New-ADReplicationSiteLink -Name S1-S2 -SitesIncluded Site-1-AvangerHQ,Site-2-Wakanda -Cost 50 -ReplicationFrequencyInMinutes 15
+    
+    - name: create Site-Link between S2 & S3
+      win_shell: |
+        New-ADReplicationSiteLink -Name S2-S3 -SitesIncluded Site-2-Wien,Site-3-SS -Cost 100 -ReplicationFrequencyInMinutes 15
+    
+    - name: create Site-Link between S3 & S1
+      win_shell: |
+        New-ADReplicationSiteLink -Name S3-S1 -SitesIncluded Site-3-SS,Site-1-HQ -Cost 50 -ReplicationFrequencyInMinutes 15
+    
+    - name: move DC1 to Site
+      win_shell: |
+        Move-ADDirectoryServer -Identity "DC1" -Site "Site-1-AvangerHQ"
+    
+    - name: move DC2 to Site
+      win_shell: |
+        Move-ADDirectoryServer -Identity "DC2" -Site "Site-1-AvangerHQ"
+
+    - name: move DC3 to Site
+      win_shell: |
+        Move-ADDirectoryServer -Identity "DC3" -Site "Site-2-Wakanda"
+
+    - name: move DC4 to Site
+      win_shell: |
+        Move-ADDirectoryServer -Identity "DC4" -Site "Site-2-Wakanda"
+    
+    - name: move RODC to Site
+      win_shell: |
+        Move-ADDirectoryServer -Identity "RODC" -Site "Site-3-SS"

@@ -1,0 +1,32 @@
+- name: Create Domain Groups
+  hosts: dc1
+  gather_facts: no
+  tasks:
+
+    - name: Create Marketing Group
+      microsoft.ad.group:
+        name: G_Marketing
+        description: "Group for Marketing Department"
+        scope: global
+        state: present
+
+    - name: Create IT Group
+      microsoft.ad.group:
+        name: G_IT
+        description: "Group for IT Department"
+        scope: global
+        state: present
+
+    - name: Create Sales Group
+      microsoft.ad.group:
+        name: G_Sales
+        description: "Group for Sales Department"
+        scope: global
+        state: present
+
+    - name: Create Geschäftsführung Group
+      microsoft.ad.group:
+        name: G_Geschaeftsfuehrung
+        description: "Group for Geschäftsführung Department"
+        scope: global
+        state: present

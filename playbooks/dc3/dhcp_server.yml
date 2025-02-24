@@ -1,0 +1,36 @@
+- name: Install and configure DHCP Server
+  hosts: dc3
+  gather_facts: no
+  tasks:
+
+    - name: Install DHCP Server role
+      win_feature:
+        name:
+          - DHCP
+        state: present
+    
+    - name: Install RSAT for DHCP
+      win_feature:
+        name:
+          - RSAT-DHCP
+        state: present
+
+    - name: Authorize DHCP Server in AD
+      win_shell: |
+        Add-DhcpServerInDC -DnsName DC3.wakanda.AvangerHQ.at -IPAddress 10.10.0.1
+
+    - name: Add DHCP Scope for Wakanda
+      win_shell: |
+        Add-DhcpServerv4Scope -Name "Wakanda" -StartRange 10.10.0.1 -EndRange 10.10.0.254 -SubnetMask 255.255.255.0 -LeaseDuration 02:00:00 -State Active
+
+    - name: Configure DHCP Options for Wakanda
+      win_shell: |
+        Set-DhcpServerv4OptionValue -ScopeId 10.10.0.0 -DnsServer ("10.10.0.1", "10.10.0.2") -Router 10.10.0.254
+    
+    - name: Add exclusion range for Gateway and SVI for Wakanda
+      win_shell: |
+        Add-DhcpServerv4ExclusionRange -ScopeId 10.10.0.0 -StartRange 10.10.0.1 -EndRange 10.10.0.10
+
+    - name: Add dhcp Failover
+      win_shell: |
+        Add-DhcpServerv4Failover -ComputerName "DC3.wakanda.AvangerHQ.at" -Name "Failover-Wakanda" -PartnerServer "DC4.wakanda.AvangerHQ.at" -ScopeId "10.10.0.0" -LoadBalancePercent 50 -MaxClientLeadTime 02:00:00 -AutoStateTransition $True -StateSwitchInterval 2:00:00

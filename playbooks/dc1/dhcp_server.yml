@@ -1,0 +1,36 @@
+- name: Install and configure DHCP Server
+  hosts: dc1
+  gather_facts: no
+  tasks:
+
+    - name: Install DHCP Server role
+      win_feature:
+        name:
+          - DHCP
+        state: present
+    
+    - name: Install RSAT for DHCP
+      win_feature:
+        name:
+          - RSAT-DHCP
+        state: present
+
+    - name: Authorize DHCP Server in AD
+      win_shell: |
+        Add-DhcpServerInDC -DnsName DC1.AvangerHQ.at -IPAddress 192.168.50.1
+
+    - name: Add DHCP Scope for LAN
+      win_shell: |
+        Add-DhcpServerv4Scope -Name "LAN" -StartRange 192.168.50.1 -EndRange 192.168.50.254 -SubnetMask 255.255.255.0 -LeaseDuration 02:00:00 -State Active
+
+    - name: Configure DHCP Options for LAN
+      win_shell: |
+        Set-DhcpServerv4OptionValue -ScopeId 192.168.50.0 -DnsServer ("192.168.50.1", "192.168.50.2") -Router 192.168.50.254
+    
+    - name: Add exclusion range for Gateway and SVI for LAN
+      win_shell: |
+        Add-DhcpServerv4ExclusionRange -ScopeId 192.168.50.0 -StartRange 192.168.50.1 -EndRange 192.168.50.10
+
+    - name: Add dhcp Failover
+      win_shell: |
+        Add-DhcpServerv4Failover -ComputerName "DC1.AvangerHQ.at" -Name "Failover-LAN" -PartnerServer "DC2.AvangerHQ.at" -ScopeId "192.168.50.0" -LoadBalancePercent 50 -MaxClientLeadTime 02:00:00 -AutoStateTransition $True -StateSwitchInterval 2:00:00

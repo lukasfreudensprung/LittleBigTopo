@@ -1,0 +1,144 @@
+- name: Create AD Users
+  hosts: dc1
+  gather_facts: no
+  tasks:
+
+    - name: Create User - Laura Becker
+      microsoft.ad.user:
+        name: l.becker
+        firstname: Laura
+        surname: Becker
+        password: "M@rketing2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_Marketing
+            - Domain Users
+        path: "OU=Users,OU=Marketing,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - Anna Bauer
+      microsoft.ad.user:
+        name: a.bauer
+        firstname: Anna
+        surname: Bauer
+        password: "A.B2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_Marketing
+            - Domain Users
+        path: "OU=Users,OU=Marketing,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - Lena Schmidt
+      microsoft.ad.user:
+        name: l.schmidt
+        firstname: Lena
+        surname: Schmidt
+        password: "L.S2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_Marketing
+            - Domain Users
+        path: "OU=Users,OU=Marketing,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - Thomas Meier
+      microsoft.ad.user:
+        name: t.meier
+        firstname: Thomas
+        surname: Meier
+        password: "IT@M2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_IT
+            - Domain Users
+        path: "OU=Users,OU=IT,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - Sarah Meier
+      microsoft.ad.user:
+        name: s.meier
+        firstname: Sarah
+        surname: Meier
+        password: "IT@M2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_IT
+            - Domain Users
+        path: "OU=Users,OU=IT,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - David Weber
+      microsoft.ad.user:
+        name: d.weber
+        firstname: David
+        surname: Weber
+        password: "IT@W2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_IT
+            - Domain Users
+        path: "OU=Users,OU=IT,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - Julia Fischer
+      microsoft.ad.user:
+        name: j.fischer
+        firstname: Julia
+        surname: Fischer
+        password: "S@les2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_Sales
+            - Domain Users
+        path: "OU=Users,OU=Sales,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - Peter Hoffmann
+      microsoft.ad.user:
+        name: p.hoffmann
+        firstname: Peter
+        surname: Hoffmann
+        password: "P.H2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_Sales
+            - Domain Users
+        path: "OU=Users,OU=Sales,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - Markus Becker
+      microsoft.ad.user:
+        name: m.becker
+        firstname: Markus
+        surname: Becker
+        password: "M.B2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_Sales
+            - Domain Users
+        path: "OU=Users,OU=Sales,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create User - Klaus Wagner
+      microsoft.ad.user:
+        name: k.wagner
+        firstname: Klaus
+        surname: Wagner
+        password: "G@Führung2024!"
+        password_never_expires: yes
+        groups:
+          set:
+            - G_Geschaeftsfuehrung
+            - Domain Users
+        path: "OU=Users,OU=Geschäftsführung,DC=AvangerHQ,DC=at"
+        state: present

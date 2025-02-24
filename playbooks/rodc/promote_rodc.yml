@@ -1,0 +1,39 @@
+- name: Promote to RODC
+  hosts: rodc
+  gather_facts: no
+  tasks:
+
+    - name: Install Active Directory Domain Services
+      win_feature:
+        name:
+          - AD-Domain-Services
+        state: present
+
+    - name: Install DNS Server
+      win_feature:
+        name:
+          - DNS
+        state: present
+
+    - name: Install RSAT for Active Directory
+      win_feature:
+        name:
+          - RSAT-AD-AdminCenter
+        state: present
+
+    - name: Install RSAT for DNS
+      win_feature:
+        name:
+          - RSAT-DNS-Server
+        state: present
+
+    - name: Promote Domain Controller
+      win_shell: |
+        Install-ADDSDomainController -DomainName "AvangerHQ.at" -ReadOnlyReplica:$true -Sitename Default-First-Site-Name -Credential (Get-Credential "AvangerHQ.at\Administrator") -SafeModeAdministratorPassword (ConvertTo-SecureString "Supergeheim123!" -AsPlainText -Force) -InstallDNS -Confirm:$false
+    
+    - name: Reboot
+      win_reboot:
+    
+    - name: Set DNS
+      ansible.windows.win_shell: |
+        Set-DnsClientServerAddress -InterfaceAlias "SS" -ServerAddresses ("192.168.125.1", "192.168.50.1")

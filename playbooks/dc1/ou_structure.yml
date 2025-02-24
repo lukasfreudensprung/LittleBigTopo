@@ -1,0 +1,59 @@
+- name: Create AD OU Structure
+  hosts: dc1
+  gather_facts: no
+  tasks:
+
+    - name: Create top-level OUs
+      loop:
+        - Marketing
+        - IT
+        - Sales
+        - Geschäftsführung
+      microsoft.ad.ou:
+        name: "{{ item }}"
+        path: "DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create child OUs under Marketing
+      loop:
+        - Users
+        - Computers
+        - Resources
+        - Special
+      microsoft.ad.ou:
+        name: "{{ item }}"
+        path: "OU=Marketing,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create child OUs under IT
+      loop:
+        - Users
+        - Computers
+        - Resources
+        - Special
+      microsoft.ad.ou:
+        name: "{{ item }}"
+        path: "OU=IT,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create child OUs under Sales
+      loop:
+        - Users
+        - Computers
+        - Resources
+        - Special
+      microsoft.ad.ou:
+        name: "{{ item }}"
+        path: "OU=Sales,DC=AvangerHQ,DC=at"
+        state: present
+
+    - name: Create child OUs under Geschäftsführung
+      loop:
+        - Users
+        - Computers
+        - Resources
+        - Special
+      microsoft.ad.ou:
+        name: "{{ item }}"
+        path: "OU=Geschäftsführung,DC=AvangerHQ,DC=at"
+        state: present

@@ -1,0 +1,39 @@
+- name: Promote to Domain Controller
+  hosts: dc1
+  gather_facts: no
+  tasks:
+
+    - name: Install Active Directory Domain Services
+      win_feature:
+        name:
+          - AD-Domain-Services
+        state: present
+
+    - name: Install DNS Server
+      win_feature:
+        name:
+          - DNS
+        state: present
+
+    - name: Install RSAT for Active Directory
+      win_feature:
+        name:
+          - RSAT-AD-AdminCenter
+        state: present
+
+    - name: Install RSAT for DNS
+      win_feature:
+        name:
+          - RSAT-DNS-Server
+        state: present
+
+    - name: Promote Domain Controller
+      win_shell: |
+        Install-ADDSForest -CreateDnsDelegation:$false -DatabasePath C:\Windows\NTDS `
+          -DomainMode WinThreshold -DomainName AvangerHQ.at -DomainNetbiosName AvangerHQ `
+          -ForestMode WinThreshold -InstallDns:$true -LogPath C:\Windows\NTDS `
+          -NoRebootOnCompletion:$true -SafeModeAdministratorPassword (ConvertTo-SecureString "Supergeheim123!" -AsPlainText -Force) `
+          -SysvolPath C:\Windows\SYSVOL -Force:$trueRe
+    
+    - name: Reboot
+      win_reboot:
