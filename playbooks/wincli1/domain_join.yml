@@ -1,0 +1,12 @@
+- name: join lan to domain
+  hosts: lan
+  gather_facts: false
+  tasks:
+
+    - name: join host to AvangerHQ.at with automatic reboot
+      microsoft.ad.membership:
+        dns_domain_name: AvangerHQ.at
+        domain_admin_user: Administrator@AvangerHQ.at
+        domain_admin_password: Supergeheim123!
+        state: domain
+        reboot: true

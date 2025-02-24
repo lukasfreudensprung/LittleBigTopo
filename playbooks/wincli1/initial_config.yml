@@ -1,0 +1,40 @@
+- name: Initial Configuration wincli1
+  hosts: wincli1
+  gather_facts: no
+  tasks:
+
+    - name: Set Hostname
+      win_hostname:
+        name: wincli1
+
+    - name: Set Interface Name
+      win_shell: |
+        Get-NetAdapter | Rename-NetAdapter -NewName "LAN"
+
+    - name: Set Timezone
+      win_shell: |
+        Set-TimeZone -Id "W. Europe Standard Time"
+    
+    - name: Set Private Network
+      win_shell: |
+        Set-NetConnectionProfile -InterfaceAlias "LAN" -NetworkCategory "Private"
+
+    - name: Set Firewall Rules
+      win_shell: |
+        Set-NetFirewallRule -Name "FPS-ICMP4-ERQ-In" -Enabled True -Profile Domain,Private
+        Set-NetFirewallRule -Name "FPS-ICMP4-ERQ-Out" -Enabled True -Profile Domain,Private
+    
+    - name: Enable PS-Remoting
+      win_shell: |
+        Enable-PSRemoting -Force
+
+    - name: Enable Remote Desktop
+      win_shell: |
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+    
+    - name: Enable Remote Desktop Firewall Rule
+      win_shell: |
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop" 
+
+    - name: Reboot
+      win_reboot:
